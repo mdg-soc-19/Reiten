@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "713641328673",
+    "firebase_url": "https://reiten-d166f.firebaseio.com",
+    "project_id": "reiten-d166f",
+    "storage_bucket": "reiten-d166f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:713641328673:android:f9f7384d87f5b13d346360",
+        "android_client_info": {
+          "package_name": "com.example.reiten"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "713641328673-rmbqrq0ivjgpcjujjjkjl9e8q282r9e2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.reiten",
+            "certificate_hash": "0c43891c4fe2241b210831d9523392f018f9dfe9"
+          }
+        },
+        {
+          "client_id": "713641328673-25s86v8gjnjr94ela009tngbc8vevlnr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAThAl1m_ESywUPdYL8Pzg8a2HTUm9gBrI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "713641328673-25s86v8gjnjr94ela009tngbc8vevlnr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
