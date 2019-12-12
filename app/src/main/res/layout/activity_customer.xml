@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#9229B6F6">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/signup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="#145EAD"
+            android:text="Customer"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="50sp"></TextView>
+
+        <ImageView
+            android:id="@+id/imageview"
+            android:layout_width="151dp"
+            android:layout_height="140dp"
+            android:layout_gravity="center"
+            android:src="@drawable/profile"
+            android:layout_marginTop="20dp"/>
+
+        <ImageButton
+            android:id="@+id/pickimage"
+            android:layout_width="51dp"
+            android:layout_height="53dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/back1"
+            android:scaleType="fitCenter"
+            android:src="@drawable/plus"
+            android:text="Pick Image" />
+
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="12dp"
+            android:paddingTop="10dp"
+            android:text="Name"
+            android:textColor="#000000"
+            android:textSize="30sp"></TextView>
+
+        <EditText
+            android:id="@+id/editText12"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/border"
+            android:ems="10"
+            android:hint="Enter Name"
+            android:inputType="textPersonName"
+            android:paddingLeft="10dp" />
+
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="12dp"
+            android:paddingTop="25dp"
+            android:text="Bhawan"
+            android:textColor="#000000"
+            android:textSize="30sp">
+
+        </TextView>
+
+        <EditText
+            android:id="@+id/editText33"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/border"
+            android:ems="10"
+            android:hint="Enter Bhawan Name"
+            android:inputType="textPersonName"
+            android:paddingLeft="10dp" />
+
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:text="SUBMIT"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#000000" />
+    </LinearLayout>
+</ScrollView>

@@ -18,7 +18,7 @@
     android:background="@drawable/border"></TextView>
 l̥
     <Button
-        android:id="@+id/button"
+        android:id="@+id/button1"
         android:layout_below="@+id/signup"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
@@ -34,7 +34,7 @@ l̥
         android:layout_width="3dp"
         android:layout_height="300dp"
         android:layout_below="@+id/signup"
-        android:layout_toRightOf="@+id/button"
+        android:layout_toRightOf="@+id/button1"
         android:background="#A9000000"
         android:layout_marginLeft="25dp"></View>
     <Button
