@@ -20,6 +20,24 @@
 
             android:textColor="#FFFFFF"
             android:textSize="50sp"></TextView>
+        <ImageView
+            android:id="@+id/imageview1"
+            android:layout_width="151dp"
+            android:layout_height="140dp"
+            android:layout_gravity="center"
+            android:src="@drawable/profile"
+            android:layout_marginTop="20dp"/>
+
+        <ImageButton
+            android:id="@+id/pickimage1"
+            android:layout_width="51dp"
+            android:layout_height="53dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/back1"
+            android:scaleType="fitCenter"
+            android:src="@drawable/plus"
+            android:text="Pick Image" />
 
         <TextView
 
