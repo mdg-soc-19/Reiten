@@ -102,7 +102,7 @@ public class Customer extends AppCompatActivity {
 
                     userID = mAuth.getCurrentUser().getUid();
                     final FirebaseUser currentUser = mAuth.getCurrentUser();
-                    StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("users_photos_"+userID);
+                    StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("customer_photos_"+name);
                     final StorageReference imageFilePath = mStorage.child(pickedImgUri.getLastPathSegment());
                     imageFilePath.putFile(pickedImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -130,7 +130,7 @@ public class Customer extends AppCompatActivity {
                             });
                         }
                     });
-                    DocumentReference documentReference = fStore.collection("Customers").document(userID);
+                    DocumentReference documentReference = fStore.collection("Customers").document(name+userID);
                     Map<String, Object> user = new HashMap<>();
                     user.put("Name", name);
                     user.put("Bhawan",bhawan);

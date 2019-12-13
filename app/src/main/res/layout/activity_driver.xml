@@ -50,7 +50,7 @@
             android:textSize="30sp"></TextView>
 
         <EditText
-            android:id="@+id/editText12"
+            android:id="@+id/editText121"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginLeft="12dp"
@@ -73,7 +73,7 @@
             android:textSize="30sp"></TextView>
 
         <EditText
-            android:id="@+id/editText33"
+            android:id="@+id/editText331"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginLeft="12dp"
@@ -87,7 +87,7 @@
 
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/button311"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -95,5 +95,14 @@
             android:text="SUBMIT"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#000000" />
+
+        <ProgressBar
+            android:id="@+id/progressBar3"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingTop="10dp"
+            android:visibility="invisible"/>
     </LinearLayout>
 </ScrollView>
