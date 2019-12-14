@@ -15,4 +15,7 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+    <string name="find_user">FIND USER</string>
+    <string name="online">Online</string>
+    <string name="offline">Offline</string>
 </resources>

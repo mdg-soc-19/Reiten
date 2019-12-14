@@ -163,12 +163,12 @@ public class signcustomer extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        if(fAuth.getCurrentUser() != null){
+        /*if(fAuth.getCurrentUser() != null){
             progressBar.setVisibility(View.VISIBLE);
             state.setText("Checking..");
             state.setVisibility(View.VISIBLE);
             checkUserProfile();
-        }
+        }*/
     }
 
     private void checkUserProfile() {

@@ -50,7 +50,6 @@ public class Driver extends AppCompatActivity {
     private FirebaseAuth mAuth;
     FirebaseFirestore fStore;
     private EditText mname, mveh;
-    private ProgressBar loadingProgress;
     private Button submit;
 
     @Override
@@ -75,17 +74,12 @@ public class Driver extends AppCompatActivity {
         });
         mname = findViewById(R.id.editText121);
         mveh = findViewById(R.id.editText331);
-        loadingProgress = findViewById(R.id.progressBar3);
         submit = findViewById(R.id.button311);
-
-        loadingProgress.setVisibility(View.INVISIBLE);
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
             submit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    loadingProgress.setVisibility(View.VISIBLE);
                     final String name = mname.getText().toString();
                     final String vehicle = mveh.getText().toString();
 
@@ -138,12 +132,12 @@ public class Driver extends AppCompatActivity {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d(TAG, "onSuccess: user Profile is created for " + userID);
+                            startActivity(new Intent(getApplicationContext(), MapsActivity.class));
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Log.d(TAG, "onFailure: " + e.toString());
-                            loadingProgress.setVisibility(View.GONE);
                         }
                     });
 
