@@ -1,17 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MapsActivity"
-    tools:layout="@layout/activity_maps">
+
 
     <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/layout_panel"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <EditText
+            android:id="@+id/edtPlace"
+            android:hint="Enter Pickup Location"
+            android:layout_margin="10dp"
+            android:layout_weight="5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            ></EditText>
+        <Button
+            android:id="@+id/btnGo"
+            android:text="GO"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></Button>
+    </LinearLayout>
+    <fragment
+        android:id="@+id/map"
+        android:layout_below="@id/layout_panel"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MapsActivity"
+        tools:layout="@layout/activity_maps"/>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -44,4 +68,3 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </RelativeLayout>
-</fragment>

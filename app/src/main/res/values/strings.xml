@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Reiten</string>
     <string name="title_activity_maps">Map</string>
+    <string name="google_direction_api">AIzaSyCRTrVWWo9yW9HomO3bKl7ilRyXTn2xzO8</string>
     <string name="title_activity_nav_drawer">NavDrawer</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
