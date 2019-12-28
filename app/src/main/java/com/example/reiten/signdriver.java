@@ -14,18 +14,23 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.reiten.Common.Common;
 import com.example.reiten.MainActivity;
+import com.example.reiten.Model.User;
 import com.example.reiten.R;
 import com.example.reiten.signup;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,6 +40,8 @@ import java.util.concurrent.TimeUnit;
 
 public class signdriver extends AppCompatActivity {
     FirebaseAuth fAuth;
+    FirebaseDatabase db;
+    DatabaseReference users;
     String otpCode = "123456";
     String verificationId;
     EditText phone,optEnter;
@@ -56,6 +63,8 @@ public class signdriver extends AppCompatActivity {
         countryCodePicker = findViewById(R.id.ccp);
         next = findViewById(R.id.imageButton2);
         fAuth = FirebaseAuth.getInstance();
+        db = FirebaseDatabase.getInstance();
+        users = db.getReference(Common.user_driver_tbl);
         fStore = FirebaseFirestore.getInstance();
         progressBar = findViewById(R.id.progressBar);
         state = findViewById(R.id.state);
@@ -175,6 +184,23 @@ public class signdriver extends AppCompatActivity {
     */}
 
     private void checkUserProfile() {
+        User user = new User();
+        user.setPhone(phone.getText().toString());
+        users.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .setValue(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
         DocumentReference docRef = fStore.collection("Drivers").document(fAuth.getCurrentUser().getUid());
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
