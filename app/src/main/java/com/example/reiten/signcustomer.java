@@ -14,15 +14,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.reiten.Common.Common;
+import com.example.reiten.Model.Rider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,6 +40,8 @@ public class signcustomer extends AppCompatActivity {
     String otpCode = "123456";
     String verificationId;
     EditText phone,optEnter;
+    FirebaseDatabase db;
+    DatabaseReference users;
     ImageButton next;
     CountryCodePicker countryCodePicker;
     PhoneAuthCredential credential;
@@ -53,6 +60,8 @@ public class signcustomer extends AppCompatActivity {
         countryCodePicker = findViewById(R.id.ccp);
         next = findViewById(R.id.imageButton2);
         fAuth = FirebaseAuth.getInstance();
+        db = FirebaseDatabase.getInstance();
+        users = db.getReference(Common.user_rider_tbl);
         fStore = FirebaseFirestore.getInstance();
         progressBar = findViewById(R.id.progressBar);
         state = findViewById(R.id.state);
@@ -172,6 +181,23 @@ public class signcustomer extends AppCompatActivity {
     }
 
     private void checkUserProfile() {
+        Rider rider = new Rider();
+        rider.setPhone(phone.getText().toString());
+        users.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .setValue(rider)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
         DocumentReference docRef = fStore.collection("Customers").document(fAuth.getCurrentUser().getUid());
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override

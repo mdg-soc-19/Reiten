@@ -20,13 +20,18 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.example.reiten.Common.Common;
+import com.example.reiten.Model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -44,6 +49,8 @@ public class Driver extends AppCompatActivity {
     ImageButton pickimage;
     ImageView imageview;
     String userID;
+    FirebaseDatabase db;
+    DatabaseReference users;
     static int PReqCode = 1;
     static int RequesCode = 1;
     Uri pickedImgUri;
@@ -57,6 +64,8 @@ public class Driver extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver);
         imageview = findViewById(R.id.imageview1);
+        db = FirebaseDatabase.getInstance();
+        users = db.getReference(Common.user_driver_tbl);
         pickimage = findViewById(R.id.pickimage1);
         fStore = FirebaseFirestore.getInstance();
         pickimage.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +85,8 @@ public class Driver extends AppCompatActivity {
         mveh = findViewById(R.id.editText331);
         submit = findViewById(R.id.button311);
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseDatabase.getInstance();
+        users = db.getReference(Common.user_driver_tbl);
         if (mAuth.getCurrentUser() != null) {
             submit.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -124,10 +135,28 @@ public class Driver extends AppCompatActivity {
                             });
                         }
                     });
+                    User user = new User();
+                    user.setName(name);
+                    Map<String, Object> user1 = new HashMap<>();
+                    user1.put("Name", name);
+                    user1.put("Rickshaw_No.",vehicle);
+                    users.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .updateChildren(user1)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+
+
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+
+                                }
+                            });
                     DocumentReference documentReference = fStore.collection("Drivers").document(name+userID);
-                    Map<String, Object> user = new HashMap<>();
-                    user.put("Name", name);
-                    user.put("Rickshaw_No.",vehicle);
+
                     documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {

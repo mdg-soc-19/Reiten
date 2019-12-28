@@ -20,6 +20,8 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.reiten.Common.Common;
+import com.example.reiten.Model.Rider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,6 +29,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -46,6 +50,8 @@ public class Customer extends AppCompatActivity {
     String userID;
     static int PReqCode = 1;
     static int RequesCode = 1;
+    FirebaseDatabase db;
+    DatabaseReference users;
     Uri pickedImgUri;
     private FirebaseAuth mAuth;
     FirebaseFirestore fStore;
@@ -75,6 +81,8 @@ public class Customer extends AppCompatActivity {
         });
         mname = findViewById(R.id.editText12);
         mbhawan = findViewById(R.id.editText33);
+        db = FirebaseDatabase.getInstance();
+        users = db.getReference(Common.user_rider_tbl);
         loadingProgress = findViewById(R.id.progressBar2);
         submit = findViewById(R.id.button37);
 
@@ -88,6 +96,7 @@ public class Customer extends AppCompatActivity {
                     loadingProgress.setVisibility(View.VISIBLE);
                     final String name = mname.getText().toString();
                     final String bhawan = mbhawan.getText().toString();
+                    final String ig = pickedImgUri.toString();
 
 
                     if (TextUtils.isEmpty(name)) {
@@ -130,14 +139,34 @@ public class Customer extends AppCompatActivity {
                             });
                         }
                     });
-                    DocumentReference documentReference = fStore.collection("Customers").document(name+userID);
                     Map<String, Object> user = new HashMap<>();
                     user.put("Name", name);
                     user.put("Bhawan",bhawan);
+                    user.put("Imageuri",ig);
+                    Rider rider = new Rider();
+                    rider.setName(name);
+                    users.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .updateChildren(user)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+
+
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+
+                                }
+                            });
+                    DocumentReference documentReference = fStore.collection("Customers").document(name+userID);
+
                     documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d(TAG, "onSuccess: user Profile is created for " + userID);
+                            startActivity(new Intent(Customer.this, Home.class));
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -192,6 +221,7 @@ public class Customer extends AppCompatActivity {
 
                 //GET CROPPED IMAGE URI AND PASS TO IMAGEVIEW
                 pickedImgUri=result.getUri();
+                if (pickedImgUri!=null)
                 imageview.setImageURI(pickedImgUri);
             }
         }

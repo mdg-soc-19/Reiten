@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "713641328673-oquoudof16ck50qu2hp2l4rtr8j64gl3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.reiten",
+            "certificate_hash": "f9c09ba4872003b4de9d1db13ead2040e7062546"
+          }
+        },
+        {
           "client_id": "713641328673-rmbqrq0ivjgpcjujjjkjl9e8q282r9e2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
