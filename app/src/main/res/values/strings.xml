@@ -22,4 +22,5 @@
     <string name="title_activity_maps_c">Map</string>
     <string name="title_activity_place_picker">Map</string>
     <string name="title_activity_home">Map</string>
+    <string name="title_activity_driver_tracking">Map</string>
 </resources>
