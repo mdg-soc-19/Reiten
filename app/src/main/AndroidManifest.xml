@@ -35,8 +35,11 @@
             android:value="@string/google_maps_key" />
 
         <activity
+            android:name=".DriverTracking"
+            android:label="Map"></activity>
+        <activity
             android:name=".Home"
-            android:label="@string/title_activity_home"></activity>
+            android:label="@string/title_activity_home" />
         <activity android:name=".CustommerCall" />
 
         <service android:name=".Service.MyFirebaseIdService">
@@ -44,16 +47,12 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".Service.MyFirebaseMessaging">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
         <service android:name=".Service.MyFirebaseMessaging1">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
 
         <activity
             android:name=".MapsActivityC"

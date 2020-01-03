@@ -2,6 +2,7 @@ package com.example.reiten;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -34,6 +35,7 @@ public class CustommerCall extends AppCompatActivity {
     IGoogleAPI mService;
     IFCMService mFCMService;
     String customerId;
+    double lat,lng;
     Button btnCancel,btnAccept;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +55,25 @@ public class CustommerCall extends AppCompatActivity {
                     cancelBooking(customerId);
             }
         });
+        btnAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(CustommerCall.this,DriverTracking.class);
+                intent.putExtra("lat",lat);
+                intent.putExtra("lng",lng);
+                intent.putExtra("customerId",customerId);
+                startActivity(intent);
+                finish();
+            }
+        });
         mediaPlayer = MediaPlayer.create(this, R.raw.ringtone);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
 
         if (getIntent() !=null)
         {
-            double lat = getIntent().getDoubleExtra("lat",-1.0);
-            double lng = getIntent().getDoubleExtra("lng",-1.0);
+             lat = getIntent().getDoubleExtra("lat",-1.0);
+             lng = getIntent().getDoubleExtra("lng",-1.0);
             customerId=getIntent().getStringExtra("customer");
             getDirection(lat,lng);
         }
@@ -69,7 +82,7 @@ public class CustommerCall extends AppCompatActivity {
 
     private void cancelBooking(String customerId) {
         Token token=new Token(customerId);
-        Notification notification=new Notification("Notice!","Driver has cancelled your request");
+        Notification notification=new Notification("Cancel","Driver has cancelled your request");
         Sender sender=new Sender(token.getToken(),notification);
         mFCMService.sendMessage(sender).enqueue(new Callback<FCMResponse>() {
             @Override

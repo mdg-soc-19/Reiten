@@ -160,7 +160,7 @@ public class Customer extends AppCompatActivity {
 
                                 }
                             });
-                    DocumentReference documentReference = fStore.collection("Customers").document(name+userID);
+                    DocumentReference documentReference = fStore.collection("Customers").document(userID);
 
                     documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override

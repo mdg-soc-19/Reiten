@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.example.reiten.Common.Common;
+import com.example.reiten.Model.Rider;
 import com.example.reiten.Model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -43,20 +44,20 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Driver extends AppCompatActivity {
-    public static final String TAG = "TAG";
+public class Driver extends AppCompatActivity {public static final String TAG = "TAG";
     private static final int REQUEST_WRITE_PERMISSION = 786;
     ImageButton pickimage;
     ImageView imageview;
     String userID;
-    FirebaseDatabase db;
-    DatabaseReference users;
     static int PReqCode = 1;
     static int RequesCode = 1;
+    FirebaseDatabase db;
+    DatabaseReference users;
     Uri pickedImgUri;
     private FirebaseAuth mAuth;
     FirebaseFirestore fStore;
     private EditText mname, mveh;
+    private ProgressBar loadingProgress;
     private Button submit;
 
     @Override
@@ -64,8 +65,6 @@ public class Driver extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver);
         imageview = findViewById(R.id.imageview1);
-        db = FirebaseDatabase.getInstance();
-        users = db.getReference(Common.user_driver_tbl);
         pickimage = findViewById(R.id.pickimage1);
         fStore = FirebaseFirestore.getInstance();
         pickimage.setOnClickListener(new View.OnClickListener() {
@@ -83,16 +82,22 @@ public class Driver extends AppCompatActivity {
         });
         mname = findViewById(R.id.editText121);
         mveh = findViewById(R.id.editText331);
-        submit = findViewById(R.id.button311);
-        mAuth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
         users = db.getReference(Common.user_driver_tbl);
+        loadingProgress = findViewById(R.id.progressBar3);
+        submit = findViewById(R.id.button311);
+
+        loadingProgress.setVisibility(View.INVISIBLE);
+        mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
             submit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    loadingProgress.setVisibility(View.VISIBLE);
                     final String name = mname.getText().toString();
                     final String vehicle = mveh.getText().toString();
+                    final String ig = pickedImgUri.toString();
 
 
                     if (TextUtils.isEmpty(name)) {
@@ -101,7 +106,7 @@ public class Driver extends AppCompatActivity {
                     }
 
                     if (TextUtils.isEmpty(vehicle)) {
-                        mveh.setError("Richshaw no. is Required.");
+                        mveh.setError("Rickshaw no. is Required.");
                         return;
                     }
 
@@ -135,13 +140,14 @@ public class Driver extends AppCompatActivity {
                             });
                         }
                     });
-                    User user = new User();
-                    user.setName(name);
-                    Map<String, Object> user1 = new HashMap<>();
-                    user1.put("Name", name);
-                    user1.put("Rickshaw_No.",vehicle);
+                    Map<String, Object> user = new HashMap<>();
+                    user.put("Name", name);
+                    user.put("Rickshaw_No.",vehicle);
+                    user.put("Imageuri",ig);
+                    User user1 = new User();
+                    user1.setName(name);
                     users.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .updateChildren(user1)
+                            .updateChildren(user)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
@@ -161,12 +167,13 @@ public class Driver extends AppCompatActivity {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d(TAG, "onSuccess: user Profile is created for " + userID);
-                            startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                            startActivity(new Intent(Driver.this, MapsActivity.class));
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Log.d(TAG, "onFailure: " + e.toString());
+                            loadingProgress.setVisibility(View.GONE);
                         }
                     });
 
@@ -215,7 +222,8 @@ public class Driver extends AppCompatActivity {
 
                 //GET CROPPED IMAGE URI AND PASS TO IMAGEVIEW
                 pickedImgUri=result.getUri();
-                imageview.setImageURI(pickedImgUri);
+                if (pickedImgUri!=null)
+                    imageview.setImageURI(pickedImgUri);
             }
         }
     }
