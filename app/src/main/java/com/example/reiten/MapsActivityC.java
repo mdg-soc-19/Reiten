@@ -20,7 +20,7 @@ import com.google.android.libraries.places.compat.ui.PlacePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-public class MapsActivityC extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+/*public class MapsActivityC extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleApiClient mGoogleApiClient;
     private int PLACE_PICKER_REQUEST = 1;
@@ -102,4 +102,4 @@ public class MapsActivityC extends AppCompatActivity implements GoogleApiClient.
             }
         }
     }
-}
+}*/
