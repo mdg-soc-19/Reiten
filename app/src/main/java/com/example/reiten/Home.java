@@ -187,7 +187,33 @@ public class Home extends AppCompatActivity
         tokens.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .setValue(token);
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.nav_signout) {
+            logOut();
+            Toast.makeText(getApplicationContext(), "Logout user!", Toast.LENGTH_LONG).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+    private void logOut() {
+        FirebaseAuth.getInstance().signOut();
+        sendToLogin();
+    }
+    private void sendToLogin() {
+
+        Intent loginIntent = new Intent(Home.this, MainActivity.class);
+        startActivity(loginIntent);
+        finish();
+
+    }
     private void sendRequestToDriver(String driveId) {
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference(Common.token_tbl);
         tokens.orderByKey().equalTo(driveId)
@@ -283,10 +309,6 @@ public class Home extends AppCompatActivity
         final DatabaseReference drivers = FirebaseDatabase.getInstance().getReference(Common.driver_tbl);
         GeoFire gfDrivers = new GeoFire(drivers);
         GeoQuery geoQuery;
-        if(String.valueOf(latitude1)!=null)
-            geoQuery = gfDrivers.queryAtLocation(new GeoLocation(latitude1,longitude1),
-                    radius);
-        else
         geoQuery = gfDrivers.queryAtLocation(new GeoLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude()),
                 radius);
         geoQuery.removeAllListeners();
@@ -299,7 +321,7 @@ public class Home extends AppCompatActivity
                     isDriverfound = true;
                     driveId = key;
                     btnPickupRequest.setText("CALL DRIVER");
-                   // Toast.makeText(Home.this, "" + key, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(Home.this, "Driver found" , Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -322,14 +344,11 @@ public class Home extends AppCompatActivity
                 //if still not found driver, increse distance
                 if (!isDriverfound&&radius<LIMIT) {
                     radius++;
+                    Log.d("Logger","Hello");
                     findDriver();
 
                 }
-                else
-                {
-                    Toast.makeText(Home.this, "No Driver available near you", Toast.LENGTH_SHORT).show();
-                    btnPickupRequest.setText("Request Pickup");
-                }
+
 
             }
 
@@ -449,8 +468,6 @@ public class Home extends AppCompatActivity
                                 mMap.addMarker(new MarkerOptions()
                                         .position(new LatLng(location.latitude, location.longitude))
                                         .flat(true)
-                                        .title(rider.getName())
-                                        .snippet("Phone-" + rider.getPhone())
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.car)));
                             }
 
@@ -544,33 +561,11 @@ public class Home extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -605,16 +600,7 @@ public class Home extends AppCompatActivity
         mGoogleApiClient.connect();
 
     }
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
-    }
-    @Override
-    protected void onStop() {
-        mGoogleApiClient.disconnect();
-        super.onStop();
-    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST1) {

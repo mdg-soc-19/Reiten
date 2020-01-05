@@ -66,6 +66,10 @@ public class signcustomer extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         state = findViewById(R.id.state);
         resend = findViewById(R.id.resendOtpBtn);
+        if (fAuth.getCurrentUser() != null) {
+            startActivity(new Intent(getApplicationContext(), Home.class));
+            finish();
+        }
 
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
