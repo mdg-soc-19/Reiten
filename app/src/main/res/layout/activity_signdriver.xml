@@ -32,7 +32,8 @@
             android:textSize="20sp"
             android:background="#FFEB3B"
             android:padding="5dp"
-            android:layout_marginLeft="30dp"/>
+            android:layout_marginLeft="30dp"
+            android:visibility="invisible"/>
     </RelativeLayout>
     <LinearLayout
         android:layout_width="wrap_content"

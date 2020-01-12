@@ -3,6 +3,7 @@ package com.example.reiten;
 import android.Manifest;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -18,6 +19,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
@@ -110,6 +112,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private  float v;
     private double lat, lng;
     private Handler handler;
+    Button log;
     private LatLng startPosition, endPosition, currentPosition;
     private int index, next;
     //private Button btnGo;
@@ -193,6 +196,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         //presense system
+        log=findViewById(R.id.logout);
         onlineRef= FirebaseDatabase.getInstance().getReference().child(".info/connected");
         currentUserRef=FirebaseDatabase.getInstance().getReference(Common.driver_tbl)
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -212,6 +216,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         //init view
+        log.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logOut();
+                Toast.makeText(getApplicationContext(), "Logout user!", Toast.LENGTH_LONG).show();
+            }
+        });
         location_switch = (Switch) findViewById(R.id.location_switch);
 
         location_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -494,6 +505,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.nav_signout) {
+            logOut();
+            Toast.makeText(getApplicationContext(), "Logout user!", Toast.LENGTH_LONG).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+    private void logOut() {
+        FirebaseAuth.getInstance().signOut();
+        sendToLogin();
+    }
+    private void sendToLogin() {
+
+        Intent loginIntent = new Intent(MapsActivity.this, signdriver.class);
+        startActivity(loginIntent);
+        finish();
+
     }
 
     private void displayLocation() {

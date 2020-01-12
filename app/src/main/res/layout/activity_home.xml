@@ -20,7 +20,7 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_nav_drawer"
-        android:visibility="gone"
+        android:visibility="invisible"
          />
 
 </androidx.drawerlayout.widget.DrawerLayout>

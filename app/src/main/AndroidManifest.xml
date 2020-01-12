@@ -54,18 +54,15 @@
         </service>
 
 
-        <activity
-            android:name=".MapsActivityC"
-            android:label="@string/title_activity_maps_c" />
+
         <activity android:name=".signdriver" />
-        <activity android:name=".signcustomer" />
         <activity android:name=".Driver" />
         <activity android:name=".Customer" />
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity android:name=".signup" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".signcustomer">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

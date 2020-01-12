@@ -28,7 +28,8 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            >
             <LinearLayout
                 android:weightSum="6"
                 android:orientation="horizontal"
@@ -46,7 +47,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Search Pickup location"
-                    android:background="#99FFC107"></Button>
+                    android:background="@drawable/corner"
+                    ></Button>
 
             </LinearLayout>
 
@@ -75,7 +77,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Search Drop location"
-                    android:background="#99FFC107"></Button>
+                    android:background="@drawable/corner"></Button>
 
             </LinearLayout>
 

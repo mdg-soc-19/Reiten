@@ -63,8 +63,15 @@
                     android:id="@+id/btn_find_user"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="7"
+                    android:layout_weight="3"
                     android:text="@string/find_user" />
+                <Button
+                    android:id="@+id/logout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:textAlignment="center"
+                    android:text="Log Out" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </RelativeLayout>

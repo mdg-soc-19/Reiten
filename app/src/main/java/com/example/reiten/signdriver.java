@@ -69,6 +69,10 @@ public class signdriver extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         state = findViewById(R.id.state);
         resend = findViewById(R.id.resendOtpBtn);
+        if (fAuth.getCurrentUser() != null) {
+            startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+            finish();
+        }
 
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
