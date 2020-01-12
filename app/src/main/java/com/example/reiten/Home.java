@@ -89,7 +89,7 @@ public class Home extends AppCompatActivity
     private static int UPDATE_INTERVAL = 5000;
     private static int FATEST_INTERVAL = 3000;
     private static int DISPLACEMENT = 10;
-    double latitude1,longitude1;
+    double latitude1=0.0,longitude1=0.0;
     double latitude2,longitude2;
 
     DatabaseReference ref;
@@ -120,9 +120,6 @@ public class Home extends AppCompatActivity
         setContentView(R.layout.activity_home);
 
         mService = Common.getFCMservice();
-
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -132,7 +129,6 @@ public class Home extends AppCompatActivity
 
 
         //init view
-        imgExpandable = (ImageView) findViewById(R.id.imgExpandable);
         start=findViewById(R.id.place_location);
         end=findViewById(R.id.place_destination);
         start.setOnClickListener(new View.OnClickListener() {
@@ -209,7 +205,7 @@ public class Home extends AppCompatActivity
     }
     private void sendToLogin() {
 
-        Intent loginIntent = new Intent(Home.this, MainActivity.class);
+        Intent loginIntent = new Intent(Home.this, signcustomer.class);
         startActivity(loginIntent);
         finish();
 
@@ -223,7 +219,7 @@ public class Home extends AppCompatActivity
                         for (DataSnapshot postSnapShot : dataSnapshot.getChildren()) {
                             Token token = postSnapShot.getValue(Token.class);//get token objek from database with ke
                             String json_lat_long;
-                            if(String.valueOf(latitude1)!=null)
+                            if(latitude1!=0.0)
                                 json_lat_long= new Gson().toJson(new LatLng(latitude1,longitude1));
                             else
                             json_lat_long= new Gson().toJson(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
@@ -263,7 +259,7 @@ public class Home extends AppCompatActivity
     private void requestPickupHere(String uid) {
         DatabaseReference dbRequest = FirebaseDatabase.getInstance().getReference(Common.pickup_request_tbl);
         GeoFire mGeofire = new GeoFire(dbRequest);
-        if(String.valueOf(latitude1)!=null)
+        if(latitude1!=0.0)
         {mGeofire.setLocation(uid, new GeoLocation(latitude1,longitude1), new
                 GeoFire.CompletionListener() {
                     @Override
@@ -320,7 +316,7 @@ public class Home extends AppCompatActivity
                 if (!isDriverfound) {
                     isDriverfound = true;
                     driveId = key;
-                    btnPickupRequest.setText("CALL DRIVER");
+                    btnPickupRequest.setText("BOOK DRIVER");
                     //Toast.makeText(Home.this, "Driver found" , Toast.LENGTH_SHORT).show();
 
                 }
