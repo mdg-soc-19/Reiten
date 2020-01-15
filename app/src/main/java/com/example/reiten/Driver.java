@@ -161,7 +161,7 @@ public class Driver extends AppCompatActivity {public static final String TAG = 
 
                                 }
                             });
-                    DocumentReference documentReference = fStore.collection("Drivers").document(name+userID);
+                    DocumentReference documentReference = fStore.collection("Drivers").document(userID);
 
                     documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override

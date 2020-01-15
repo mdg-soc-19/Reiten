@@ -95,7 +95,7 @@ public class Home extends AppCompatActivity
     DatabaseReference ref;
     GeoFire geoFire;
 
-    Marker mUserMarker;
+    Marker mUserMarker,mUserMarker2;
 
     //Bottomsheet
     ImageView imgExpandable;
@@ -617,7 +617,9 @@ public class Home extends AppCompatActivity
                 mPlaceDestination=place.getName().toString();
                 latitude2 = Double.parseDouble(String.valueOf(place.getLatLng().latitude));
                 longitude2 = Double.parseDouble(String.valueOf(place.getLatLng().longitude));
-                mUserMarker=mMap.addMarker(new MarkerOptions().position(new LatLng(latitude2,longitude2)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).title("Drop Here"));
+                if(mUserMarker2 != null)
+                    mUserMarker2.remove();
+                mUserMarker2=mMap.addMarker(new MarkerOptions().position(new LatLng(latitude2,longitude2)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).title("Drop Here"));
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude2,longitude2),15.0f));
                 BottomSheetRiderFragment mBottomSheet=BottomSheetRiderFragment.newInstance(mPlaceLocation,mPlaceDestination);
                 mBottomSheet.show(getSupportFragmentManager(),mBottomSheet.getTag());

@@ -8,14 +8,18 @@ import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
 import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.LinearInterpolator;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.reiten.Common.Common;
@@ -81,6 +85,7 @@ public class DriverTracking extends FragmentActivity implements OnMapReadyCallba
     private static final int PLAY_SERVICE_RES_REQUETS = 7001;
     private GoogleMap mMap;
     double riderLat, riderLng;
+    Button navigate;
     String customerId;
     private Circle riderMarker;
     private Marker driverMarker;
@@ -96,22 +101,32 @@ public class DriverTracking extends FragmentActivity implements OnMapReadyCallba
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+        navigate=findViewById(R.id.btnNavigate);
+
         mapFragment.getMapAsync(this);
         if (getIntent() != null) {
             riderLat = getIntent().getDoubleExtra("lat", -1.0);
-            riderLng = getIntent().getDoubleExtra("lat", -1.0);
+            riderLng = getIntent().getDoubleExtra("lng", -1.0);
             customerId=getIntent().getStringExtra("customerId");
         }
         mService = Common.getGoogleAPI();
         mFCMService=Common.getFCMservice();
 
         setUpLocation();
+        navigate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String uri = "http://maps.google.com/maps?f=d&hl=en&saddr="+Common.mLastLocation.getLatitude()+","+Common.mLastLocation.getLongitude()+"&daddr="+riderLat+","+riderLng;
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
+                startActivity(Intent.createChooser(intent, "Select an application"));
+            }
+        });
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        riderMarker = mMap.addCircle(new CircleOptions().center(new LatLng(riderLat, riderLng)).radius(30).strokeColor(Color.BLUE).fillColor(0x220000FF).strokeWidth(5.0f));
+        riderMarker = mMap.addCircle(new CircleOptions().center(new LatLng(riderLat, riderLng)).radius(10).strokeColor(Color.BLUE).fillColor(0x220000FF).strokeWidth(5.0f));
         geoFire=new GeoFire(FirebaseDatabase.getInstance().getReference(Common.user_driver_tbl));
         GeoQuery geoQuery=geoFire.queryAtLocation(new GeoLocation(riderLat,riderLng),0.05f);
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
@@ -341,7 +356,7 @@ public class DriverTracking extends FragmentActivity implements OnMapReadyCallba
                 polylineOptions.color(Color.RED);
                 polylineOptions.geodesic(true);
             }
-
+            direction=mMap.addPolyline(polylineOptions);
 
         }
     }

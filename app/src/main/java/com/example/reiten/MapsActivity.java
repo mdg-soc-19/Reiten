@@ -301,6 +301,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             try {
                                 JSONObject jsonObject = new JSONObject(response.body().toString());
                                 JSONArray jsonArray = jsonObject.getJSONArray("routes");
+
                                 for(int i =0; i<jsonArray.length();i++)
                                 {
                                     JSONObject route = jsonArray.getJSONObject(i);

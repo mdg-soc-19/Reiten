@@ -60,9 +60,9 @@ public class DirectionJSONParser {
      * Method to decode polyline points
      * Courtesy : http://jeffreysambells.com/2010/05/27/decoding-polylines-from-google-maps-direction-api-with-java
      * */
-    private List<LatLng> decodePoly(String encoded) {
+    private List decodePoly(String encoded) {
 
-        List<LatLng> poly = new ArrayList<LatLng>();
+        List poly = new ArrayList();
         int index = 0, len = encoded.length();
         int lat = 0, lng = 0;
 

@@ -48,6 +48,13 @@ public class CustommerCall extends AppCompatActivity {
         mService = Common.getGoogleAPI();
         btnCancel=findViewById(R.id.btnDecline);
         btnAccept=findViewById(R.id.btnAccept);
+        if (getIntent() !=null)
+        {
+            lat = getIntent().getDoubleExtra("lat",-1.0);
+            lng = getIntent().getDoubleExtra("lng",-1.0);
+            customerId=getIntent().getStringExtra("customer");
+            getDirection(lat,lng);
+        }
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,13 +77,7 @@ public class CustommerCall extends AppCompatActivity {
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
 
-        if (getIntent() !=null)
-        {
-             lat = getIntent().getDoubleExtra("lat",-1.0);
-             lng = getIntent().getDoubleExtra("lng",-1.0);
-            customerId=getIntent().getStringExtra("customer");
-            getDirection(lat,lng);
-        }
+
 
     }
 

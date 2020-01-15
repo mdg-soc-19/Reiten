@@ -34,6 +34,7 @@
                 android:weightSum="6"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
+                android:padding="4dp"
                 android:layout_height="wrap_content">
                 <ImageView
                     android:layout_weight="1"
@@ -46,22 +47,24 @@
                     android:layout_weight="5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Search Pickup location"
+                    android:text="Choose Pickup location"
+                    android:fontFamily="sans-serif-condensed"
                     android:background="@drawable/corner"
+                    android:textStyle="bold"
                     ></Button>
 
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="2dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
                 android:background="@color/dividerColor"/>
 
             <LinearLayout
                 android:weightSum="6"
-                android:layout_marginTop="12dp"
+                android:padding="4dp"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -76,7 +79,9 @@
                     android:layout_weight="5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Search Drop location"
+                    android:text="Choose Drop location"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textStyle="bold"
                     android:background="@drawable/corner"></Button>
 
             </LinearLayout>
