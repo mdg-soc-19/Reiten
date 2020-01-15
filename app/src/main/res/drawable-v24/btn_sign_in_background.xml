@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:color="@color/rippleEffectColor"
+    tools:targetApi="ice_cream_sandwich"
+    >
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/btnSigIn"></solid>
+            <stroke android:color="@color/btnSigIn" android:width="2dp"></stroke>
+            <corners android:radius="18dp"/>
+
+
+        </shape>
+
+
+    </item>
+
+</ripple>
