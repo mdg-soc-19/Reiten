@@ -39,7 +39,7 @@
         <activity
             android:name=".Home"
             android:label="@string/title_activity_home" />
-        <activity android:name=".CustommerCall" />
+        <activity android:name=".CustomerCall" />
 
         <service android:name=".Service.MyFirebaseIdService">
             <intent-filter>

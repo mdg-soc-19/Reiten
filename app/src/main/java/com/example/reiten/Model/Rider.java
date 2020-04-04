@@ -1,36 +1,27 @@
 package com.example.reiten.Model;
 
 public class Rider {
-    private String email, password, name, phone;
+    private String bhawan, name, phone;
 
     public Rider() {
     }
 
-    public Rider(String email, String password, String name, String phone) {
-        this.email = email;
-        this.password = password;
+    public Rider(String bhawan, String name, String phone) {
+        this.bhawan = bhawan;
         this.name = name;
         this.phone = phone;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public String getBhawan() {
+        return bhawan;
+    }
+
+    public void setBhawan(String bhawan) {
+        this.bhawan = bhawan;
     }
 
     public void setName(String name) {

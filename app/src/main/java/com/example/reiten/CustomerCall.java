@@ -29,7 +29,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CustommerCall extends AppCompatActivity {
+public class CustomerCall extends AppCompatActivity {
 
     TextView txtTime, txtDistance, txtAddress,txtCountDown;
     MediaPlayer mediaPlayer;
@@ -38,6 +38,7 @@ public class CustommerCall extends AppCompatActivity {
     String customerId;
     double lat,lng;
     Button btnCancel,btnAccept;
+    CountDownTimer countDownTimer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +70,7 @@ public class CustommerCall extends AppCompatActivity {
             public void onClick(View v) {
                 if(!TextUtils.isEmpty(customerId))
                     acceptBooking(customerId);
-                Intent intent=new Intent(CustommerCall.this,DriverTracking.class);
+                Intent intent=new Intent(CustomerCall.this,DriverTracking.class);
                 intent.putExtra("lat",lat);
                 intent.putExtra("lng",lng);
                 intent.putExtra("customerId",customerId);
@@ -86,7 +87,7 @@ startTimer();
     }
 
     private void startTimer() {
-        CountDownTimer countDownTimer=new CountDownTimer(30000,1000) {
+        countDownTimer=new CountDownTimer(30000,1000) {
             @Override
             public void onTick(long millisUntilFinished) {
             txtCountDown.setText(String.valueOf(millisUntilFinished/1000));
@@ -97,7 +98,7 @@ startTimer();
                     if(!TextUtils.isEmpty(customerId))
                         cancelBooking(customerId);
                     else
-                        Toast.makeText(CustommerCall.this,"Customer id must not be null",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CustomerCall.this,"Customer id must not be null",Toast.LENGTH_SHORT).show();
             }
         }.start();
     }
@@ -106,12 +107,14 @@ startTimer();
         Token token=new Token(customerId);
         Notification notification=new Notification("Accept","Driver has accepted your request");
         Sender sender=new Sender(token.getToken(),notification);
+        if(countDownTimer!=null)
+            countDownTimer.cancel();
         mFCMService.sendMessage(sender).enqueue(new Callback<FCMResponse>() {
             @Override
             public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
                 if(response.body().success==1)
                 {
-                    //Toast.makeText(CustommerCall.this,"A",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(CustomerCall.this,"A",Toast.LENGTH_SHORT).show();
                     finish();
                 }
             }
@@ -127,12 +130,14 @@ startTimer();
         Token token=new Token(customerId);
         Notification notification=new Notification("Cancel","Driver has cancelled your request");
         Sender sender=new Sender(token.getToken(),notification);
+        if(countDownTimer!=null)
+            countDownTimer.cancel();
         mFCMService.sendMessage(sender).enqueue(new Callback<FCMResponse>() {
             @Override
             public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
                 if(response.body().success==1)
                 {
-                    Toast.makeText(CustommerCall.this,"Cancelled",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CustomerCall.this,"Cancelled",Toast.LENGTH_SHORT).show();
                     finish();
                 }
             }
@@ -185,7 +190,7 @@ startTimer();
 
                         @Override
                         public void onFailure(Call<String> call, Throwable t) {
-                            Toast.makeText(CustommerCall.this,""+t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CustomerCall.this,""+t.getMessage(), Toast.LENGTH_SHORT).show();
 
                         }
                     });

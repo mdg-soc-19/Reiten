@@ -1,7 +1,5 @@
 
 package com.example.reiten;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,16 +12,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.reiten.Common.Common;
-import com.example.reiten.MainActivity;
 import com.example.reiten.Model.User;
-import com.example.reiten.R;
-import com.example.reiten.signup;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,7 +41,7 @@ public class signdriver extends AppCompatActivity {
     DatabaseReference users;
     String otpCode = "123456";
     String verificationId;
-    EditText phone,optEnter;
+    EditText phone, optEnter;
     ImageButton next;
     CountryCodePicker countryCodePicker;
     PhoneAuthCredential credential;
@@ -58,7 +55,8 @@ public class signdriver extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signdriver);phone = findViewById(R.id.editText3);
+        setContentView(R.layout.activity_signdriver);
+        phone = findViewById(R.id.editText3);
         optEnter = findViewById(R.id.editText2);
         countryCodePicker = findViewById(R.id.ccp);
         next = findViewById(R.id.imageButton2);
@@ -69,10 +67,16 @@ public class signdriver extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         state = findViewById(R.id.state);
         resend = findViewById(R.id.resendOtpBtn);
-        if (fAuth.getCurrentUser() != null) {
-            startActivity(new Intent(getApplicationContext(), MapsActivity.class));
-            finish();
-        }
+        DocumentReference docRef = fStore.collection("Drivers").document(fAuth.getCurrentUser().getUid());
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                    finish();
+                }
+            }
+        });
 
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,32 +89,32 @@ public class signdriver extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!phone.getText().toString().isEmpty() && phone.getText().toString().length() == 10) {
-                    if(!verificationOnProgress){
+                if (!phone.getText().toString().isEmpty() && phone.getText().toString().length() == 10) {
+                    if (!verificationOnProgress) {
                         next.setEnabled(false);
                         progressBar.setVisibility(View.VISIBLE);
                         state.setVisibility(View.VISIBLE);
 
-                        String phoneNum = "+"+countryCodePicker.getSelectedCountryCode()+phone.getText().toString();
+                        String phoneNum = "+" + countryCodePicker.getSelectedCountryCode() + phone.getText().toString();
                         Log.d("phone", "Phone No.: " + phoneNum);
                         requestPhoneAuth(phoneNum);
-                    }else {
+                    } else {
                         next.setEnabled(false);
                         optEnter.setVisibility(View.GONE);
                         progressBar.setVisibility(View.VISIBLE);
                         state.setText("Logging in");
                         state.setVisibility(View.VISIBLE);
                         otpCode = optEnter.getText().toString();
-                        if(otpCode.isEmpty()){
+                        if (otpCode.isEmpty()) {
                             optEnter.setError("Required");
                             return;
                         }
 
-                        credential = PhoneAuthProvider.getCredential(verificationId,otpCode);
+                        credential = PhoneAuthProvider.getCredential(verificationId, otpCode);
                         verifyAuth(credential);
                     }
 
-                }else {
+                } else {
                     phone.setError("Valid Phone Required");
                 }
             }
@@ -120,8 +124,8 @@ public class signdriver extends AppCompatActivity {
     }
 
     private void requestPhoneAuth(String phoneNumber) {
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber,30L, TimeUnit.SECONDS,this,
-                new PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber, 30L, TimeUnit.SECONDS, this,
+                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
                     @Override
                     public void onCodeAutoRetrievalTimeOut(String s) {
@@ -163,10 +167,10 @@ public class signdriver extends AppCompatActivity {
         fAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(signdriver.this, "Phone Verified."+fAuth.getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
+                if (task.isSuccessful()) {
+                    Toast.makeText(signdriver.this, "Phone Verified." + fAuth.getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
                     checkUserProfile();
-                }else {
+                } else {
                     progressBar.setVisibility(View.GONE);
                     state.setVisibility(View.GONE);
                     Toast.makeText(signdriver.this, "Can not Verify phone and Create Account.", Toast.LENGTH_SHORT).show();
@@ -185,7 +189,8 @@ public class signdriver extends AppCompatActivity {
             state.setVisibility(View.VISIBLE);
             checkUserProfile();
         }
-    */}
+    */
+    }
 
     private void checkUserProfile() {
         User user = new User();
@@ -209,10 +214,10 @@ public class signdriver extends AppCompatActivity {
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if(documentSnapshot.exists()){
+                if (documentSnapshot.exists()) {
                     startActivity(new Intent(getApplicationContext(), MapsActivity.class));
                     finish();
-                }else {
+                } else {
                     //Toast.makeText(Register.this, "Profile Do not Exists.", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(getApplicationContext(), Driver.class));
                     finish();

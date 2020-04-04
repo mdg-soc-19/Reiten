@@ -1,18 +1,6 @@
 package com.example.reiten;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentActivity;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import android.Manifest;
-import android.animation.ValueAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,24 +9,30 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.arsy.maps_library.MapRipple;
 import com.example.reiten.Common.Common;
 import com.example.reiten.Helper.CustomInfoWindow;
 import com.example.reiten.Model.FCMResponse;
 import com.example.reiten.Model.Notification;
-import com.example.reiten.Model.Rider;
 import com.example.reiten.Model.Sender;
 import com.example.reiten.Model.Token;
+import com.example.reiten.Model.User;
 import com.example.reiten.Remote.IFCMService;
 import com.example.reiten.Remote.IGoogleAPI;
 import com.firebase.geofire.GeoFire;
@@ -54,7 +48,6 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -71,7 +64,6 @@ import com.google.android.gms.maps.model.SquareCap;
 import com.google.android.libraries.places.compat.Place;
 import com.google.android.libraries.places.compat.ui.PlacePicker;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -146,7 +138,7 @@ boolean c=false;
             cancel.add(driveId);
             driveId="";
             isDriverfound=false;
-            if(mapRipple.isAnimationRunning())
+            if(mapRipple!=null&&mapRipple.isAnimationRunning())
                 mapRipple.stopRippleMapAnimation();
             mUserMarker.hideInfoWindow();
 
@@ -266,20 +258,21 @@ boolean c=false;
                         for (DataSnapshot postSnapShot : dataSnapshot.getChildren()) {
                             Token token = postSnapShot.getValue(Token.class);//get token objek from database with ke
                             String json_lat_long;
-                            if(latitude1!=0.0)
-                                json_lat_long= new Gson().toJson(new LatLng(latitude1,longitude1));
+                            if (latitude1 != 0.0)
+                                json_lat_long = new Gson().toJson(new LatLng(latitude1, longitude1));
                             else
-                            json_lat_long= new Gson().toJson(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
-                            String riderToken=FirebaseInstanceId.getInstance().getToken();
+                                json_lat_long = new Gson().toJson(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+                            String riderToken = FirebaseInstanceId.getInstance().getToken();
                             Notification data = new Notification(riderToken, json_lat_long);//send it to driver and will deseriliaize it again
-                            Sender content = new Sender(token.getToken(), data);
+                            {   Sender content = new Sender(token.getToken(), data);
 
                             mService.sendMessage(content)
                                     .enqueue(new Callback<FCMResponse>() {
                                         @Override
                                         public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
                                             if (response.body().success == 1)
-                                                Toast.makeText(Home.this, "Request sent!", Toast.LENGTH_SHORT).show();
+                                            {Toast.makeText(Home.this, "Request sent!", Toast.LENGTH_SHORT).show();
+                                            }
                                             else
                                                 Toast.makeText(Home.this, "Failed!", Toast.LENGTH_SHORT).show();
                                         }
@@ -292,7 +285,7 @@ boolean c=false;
                                         }
                                     });
 
-
+                        }
                         }
                     }
 
@@ -472,6 +465,9 @@ boolean c=false;
             driversAvailable.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(latitude1!=0.0)
+                        loadAllAvailableDriver(new LatLng(latitude1,longitude1));
+                    else
                     loadAllAvailableDriver(new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude()));
                 }
 
@@ -527,12 +523,14 @@ boolean c=false;
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                Rider rider = dataSnapshot.getValue(Rider.class);
+                                User rider = dataSnapshot.getValue(User.class);
+                                assert rider != null;
                                 if(rider.getPhone()!=null){
                                 mMap.addMarker(new MarkerOptions()
                                         .position(new LatLng(location.latitude, location.longitude))
                                         .flat(true)
-                                        .snippet("Phone"+rider.getPhone())
+                                        .title(rider.getName())
+                                        .snippet("Phone- "+rider.getPhone())
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.car)));
                             }
                             }
@@ -800,7 +798,8 @@ boolean c=false;
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
-        displayLocation();
+        if(latitude1==0.0)
+            displayLocation();
 
     }
 }

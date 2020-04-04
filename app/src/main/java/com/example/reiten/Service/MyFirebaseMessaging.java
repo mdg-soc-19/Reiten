@@ -14,7 +14,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.reiten.Common.Common;
-import com.example.reiten.CustommerCall;
+import com.example.reiten.CustomerCall;
 import com.example.reiten.R;
 import com.example.reiten.State;
 import com.google.android.gms.maps.model.LatLng;
@@ -29,7 +29,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         if(State.symbol.equals("D")){
         LatLng customer_location = new Gson().fromJson(remoteMessage.getNotification().getBody(),LatLng.class);
 
-        Intent intent = new Intent(getBaseContext(), CustommerCall.class);
+        Intent intent = new Intent(getBaseContext(), CustomerCall.class);
         intent.putExtra("lat",customer_location.latitude);
         intent.putExtra("lng",customer_location.longitude);
         intent.putExtra("customer",remoteMessage.getNotification().getTitle());

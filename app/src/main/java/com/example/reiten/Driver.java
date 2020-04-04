@@ -146,8 +146,11 @@ public class Driver extends AppCompatActivity {public static final String TAG = 
                     user.put("Imageuri",ig);
                     User user1 = new User();
                     user1.setName(name);
+                    user1.setRickshaw_no(vehicle);
+                    user1.setImage(ig);
+                    Map<String, Object> postValues = user1.toMap();
                     users.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .updateChildren(user)
+                            .updateChildren(postValues)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
