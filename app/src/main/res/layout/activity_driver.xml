@@ -15,11 +15,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="#145EAD"
-            android:text="Driver"
+            android:text="@string/driver"
             android:textAlignment="center"
 
             android:textColor="#FFFFFF"
-            android:textSize="50sp"></TextView>
+            android:textSize="50sp" />
         <ImageView
             android:id="@+id/imageview1"
             android:layout_width="151dp"
@@ -37,7 +37,7 @@
             android:background="@drawable/back1"
             android:scaleType="fitCenter"
             android:src="@drawable/plus"
-            android:text="Pick Image" />
+            android:text="@string/pick_image" />
 
         <TextView
 
@@ -47,7 +47,7 @@
             android:paddingTop="10dp"
             android:text="Name"
             android:textColor="#000000"
-            android:textSize="30sp"></TextView>
+            android:textSize="30sp" />
 
         <EditText
             android:id="@+id/editText121"
@@ -58,7 +58,7 @@
             android:layout_marginRight="12dp"
             android:background="@drawable/border"
             android:ems="10"
-            android:hint="Enter Name"
+            android:hint="@string/enter_name"
             android:inputType="textPersonName"
             android:paddingLeft="10dp" />
 
@@ -70,7 +70,7 @@
             android:paddingTop="25dp"
             android:text="E- Rickshaw No."
             android:textColor="#000000"
-            android:textSize="30sp"></TextView>
+            android:textSize="30sp" />
 
         <EditText
             android:id="@+id/editText331"

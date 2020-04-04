@@ -93,7 +93,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
 
-
     private static int UPDATE_INTERVAL = 5000;
     private static int FATEST_INTERVAL = 3000;
 
@@ -197,6 +196,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         //presense system
         log=findViewById(R.id.logout);
+        State.symbol="D";
         onlineRef= FirebaseDatabase.getInstance().getReference().child(".info/connected");
         currentUserRef=FirebaseDatabase.getInstance().getReference(Common.driver_tbl)
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());

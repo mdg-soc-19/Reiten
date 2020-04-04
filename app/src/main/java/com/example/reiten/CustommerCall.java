@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -30,7 +31,7 @@ import retrofit2.Response;
 
 public class CustommerCall extends AppCompatActivity {
 
-    TextView txtTime, txtDistance, txtAddress;
+    TextView txtTime, txtDistance, txtAddress,txtCountDown;
     MediaPlayer mediaPlayer;
     IGoogleAPI mService;
     IFCMService mFCMService;
@@ -45,6 +46,7 @@ public class CustommerCall extends AppCompatActivity {
         txtAddress = (TextView)findViewById(R.id.txtAddress);
         txtDistance = (TextView)findViewById(R.id.txtDistance);
         txtTime = (TextView)findViewById(R.id.txtTime);
+        txtCountDown = (TextView)findViewById(R.id.txt_count_down);
         mService = Common.getGoogleAPI();
         btnCancel=findViewById(R.id.btnDecline);
         btnAccept=findViewById(R.id.btnAccept);
@@ -65,6 +67,8 @@ public class CustommerCall extends AppCompatActivity {
         btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!TextUtils.isEmpty(customerId))
+                    acceptBooking(customerId);
                 Intent intent=new Intent(CustommerCall.this,DriverTracking.class);
                 intent.putExtra("lat",lat);
                 intent.putExtra("lng",lng);
@@ -76,9 +80,47 @@ public class CustommerCall extends AppCompatActivity {
         mediaPlayer = MediaPlayer.create(this, R.raw.ringtone);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
+startTimer();
 
 
+    }
 
+    private void startTimer() {
+        CountDownTimer countDownTimer=new CountDownTimer(30000,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+            txtCountDown.setText(String.valueOf(millisUntilFinished/1000));
+            }
+
+            @Override
+            public void onFinish() {
+                    if(!TextUtils.isEmpty(customerId))
+                        cancelBooking(customerId);
+                    else
+                        Toast.makeText(CustommerCall.this,"Customer id must not be null",Toast.LENGTH_SHORT).show();
+            }
+        }.start();
+    }
+
+    private void acceptBooking(String customerId) {
+        Token token=new Token(customerId);
+        Notification notification=new Notification("Accept","Driver has accepted your request");
+        Sender sender=new Sender(token.getToken(),notification);
+        mFCMService.sendMessage(sender).enqueue(new Callback<FCMResponse>() {
+            @Override
+            public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
+                if(response.body().success==1)
+                {
+                    //Toast.makeText(CustommerCall.this,"A",Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FCMResponse> call, Throwable t) {
+
+            }
+        });
     }
 
     private void cancelBooking(String customerId) {

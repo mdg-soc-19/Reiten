@@ -12,7 +12,9 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.example.reiten.Common.Common;
 import com.example.reiten.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -30,7 +32,16 @@ public class MyFirebaseMessaging1 extends FirebaseMessagingService {
                     Toast.makeText(MyFirebaseMessaging1.this, "" + remoteMessage.getNotification().getBody(), Toast.LENGTH_SHORT).show();
                 }
             });
-        } else if (remoteMessage.getNotification().getTitle().equals("Arrived")) {
+            LocalBroadcastManager.getInstance(MyFirebaseMessaging1.this).sendBroadcast(new Intent(Common.CANCEL_BROADCAST_STRING));
+        }
+        if (remoteMessage.getNotification().getTitle().equals("Accept")) {
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(MyFirebaseMessaging1.this, "" + remoteMessage.getNotification().getBody(), Toast.LENGTH_SHORT).show();
+                }
+            });}else if (remoteMessage.getNotification().getTitle().equals("Arrived")) {
             showArrivedNotification(remoteMessage.getNotification().getBody());
         }
 

@@ -29,11 +29,10 @@
             android:layout_below="@+id/signup"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:text="As Customer"
+            android:text="Customer"
             android:textSize="20sp"
-            android:background="#FFEB3B"
+            android:background="@drawable/corner"
             android:padding="5dp"
-            android:visibility="invisible"
             android:layout_marginLeft="30dp"/>
 
     </RelativeLayout>

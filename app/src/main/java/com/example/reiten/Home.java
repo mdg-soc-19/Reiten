@@ -9,20 +9,29 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
+import android.animation.ValueAnimator;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.arsy.maps_library.MapRipple;
 import com.example.reiten.Common.Common;
 import com.example.reiten.Helper.CustomInfoWindow;
 import com.example.reiten.Model.FCMResponse;
@@ -31,6 +40,7 @@ import com.example.reiten.Model.Rider;
 import com.example.reiten.Model.Sender;
 import com.example.reiten.Model.Token;
 import com.example.reiten.Remote.IFCMService;
+import com.example.reiten.Remote.IGoogleAPI;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -44,14 +54,20 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.SquareCap;
 import com.google.android.libraries.places.compat.Place;
 import com.google.android.libraries.places.compat.ui.PlacePicker;
 import com.google.android.material.navigation.NavigationView;
@@ -64,6 +80,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -80,7 +103,7 @@ public class Home extends AppCompatActivity
     private GoogleMap mMap;
     private static final int MY_PERMISSION_REQUEST_CODE = 7192;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 300193;
-
+    private List<LatLng> polyLineList;
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private int PLACE_PICKER_REQUEST1 = 1;
@@ -91,7 +114,10 @@ public class Home extends AppCompatActivity
     private static int DISPLACEMENT = 10;
     double latitude1=0.0,longitude1=0.0;
     double latitude2,longitude2;
-
+    private PolylineOptions polylineOptions;
+    private Polyline direction;
+    MapRipple mapRipple;
+boolean c=false;
     DatabaseReference ref;
     GeoFire geoFire;
 
@@ -100,29 +126,50 @@ public class Home extends AppCompatActivity
     //Bottomsheet
     ImageView imgExpandable;
     Button btnPickupRequest,start,end;
-
+    IGoogleAPI mservice;
     boolean isDriverfound = false;
     String driveId = "";
     int radius = 1;// 1 km
     int distance = 1; //3 km
     private static final int LIMIT = 3;
     String mPlaceLocation,mPlaceDestination;
-
+    List<String> cancel= new ArrayList<>();
     IFCMService mService;
 
     //peesense system
     DatabaseReference driversAvailable;
 
+    private BroadcastReceiver mCancelBroadcast=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            btnPickupRequest.setText("PICKUP REQUEST");
+            cancel.add(driveId);
+            driveId="";
+            isDriverfound=false;
+            if(mapRipple.isAnimationRunning())
+                mapRipple.stopRippleMapAnimation();
+            mUserMarker.hideInfoWindow();
+
+        }
+    };
+
+
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mCancelBroadcast);
+        super.onDestroy();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        State.symbol="C";
+        LocalBroadcastManager.getInstance(this).registerReceiver(mCancelBroadcast,new IntentFilter(Common.CANCEL_BROADCAST_STRING));
         mService = Common.getFCMservice();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        mservice = Common.getGoogleAPI();
         //Maps
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -275,6 +322,13 @@ public class Home extends AppCompatActivity
                     .position(new LatLng(latitude1,longitude1))
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
             mUserMarker.showInfoWindow();
+            mapRipple=new MapRipple(mMap,new LatLng(latitude1,longitude1),this);
+            mapRipple.withNumberOfRipples(1);
+            mapRipple.withDistance(500);
+            mapRipple.withRippleDuration(1000);
+            mapRipple.withTransparency(0.5f);
+            mapRipple.startRippleMapAnimation();
+
             btnPickupRequest.setText("Getting Your DRIVER ....");
             findDriver();}
         else{
@@ -293,6 +347,13 @@ public class Home extends AppCompatActivity
                     .position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()))
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
             mUserMarker.showInfoWindow();
+            mapRipple=new MapRipple(mMap,new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()),this);
+            mapRipple.withNumberOfRipples(1);
+            mapRipple.withDistance(500);
+            mapRipple.withRippleDuration(2000);
+            mapRipple.withTransparency(0.5f);
+            mapRipple.startRippleMapAnimation();
+
             btnPickupRequest.setText("Getting Your DRIVER ....");
             findDriver();
         }
@@ -313,7 +374,12 @@ public class Home extends AppCompatActivity
             public void onKeyEntered(String key, GeoLocation location) {
 
                 //if found
-                if (!isDriverfound) {
+                for (String string : cancel) {
+                    if(string.matches(key)){
+                        c=true;
+                    }
+                }
+                if (!isDriverfound&&!c) {
                     isDriverfound = true;
                     driveId = key;
                     btnPickupRequest.setText("BOOK DRIVER");
@@ -340,6 +406,7 @@ public class Home extends AppCompatActivity
                 //if still not found driver, increse distance
                 if (!isDriverfound&&radius<LIMIT) {
                     radius++;
+                    c=false;
                     Log.d("Logger","Hello");
                     findDriver();
 
@@ -434,6 +501,7 @@ public class Home extends AppCompatActivity
         } else {
             Log.d("ERROR", "Cannot get your location");
         }
+
     }
 
     private void loadAllAvailableDriver(final LatLng location) {
@@ -460,11 +528,13 @@ public class Home extends AppCompatActivity
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Rider rider = dataSnapshot.getValue(Rider.class);
-
+                                if(rider.getPhone()!=null){
                                 mMap.addMarker(new MarkerOptions()
                                         .position(new LatLng(location.latitude, location.longitude))
                                         .flat(true)
+                                        .snippet("Phone"+rider.getPhone())
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.car)));
+                            }
                             }
 
                             @Override
@@ -621,10 +691,105 @@ public class Home extends AppCompatActivity
                     mUserMarker2.remove();
                 mUserMarker2=mMap.addMarker(new MarkerOptions().position(new LatLng(latitude2,longitude2)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).title("Drop Here"));
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude2,longitude2),15.0f));
+                if (direction != null)
+                    direction.remove();
+                getDirection();
                 BottomSheetRiderFragment mBottomSheet=BottomSheetRiderFragment.newInstance(mPlaceLocation,mPlaceDestination);
                 mBottomSheet.show(getSupportFragmentManager(),mBottomSheet.getTag());
             }
         }
+    }
+    private void getDirection() {
+
+        String requestApi = null;
+        try {
+            requestApi = "https://maps.googleapis.com/maps/api/directions/json?" +
+                    "mode=driving&" +
+                    "transit_routing_preference=less_driving&" +
+                    "origin=" + latitude1 + "," + longitude1 + "&" +
+                    "destination=" + latitude2 + "," + longitude2 + "&" +
+                    "key=" + getResources().getString(R.string.google_direction_api);
+            Log.d("REITEN", requestApi); //print url for debug
+            mservice.getPath(requestApi)
+                    .enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(response.body().toString());
+                                JSONArray jsonArray = jsonObject.getJSONArray("routes");
+
+                                for(int i =0; i<jsonArray.length();i++)
+                                {
+                                    JSONObject route = jsonArray.getJSONObject(i);
+                                    JSONObject poly = route.getJSONObject("overview_polyline");
+                                    String polyline = poly.getString("points");
+                                    polyLineList = decodePoly(polyline);
+
+                                }
+                                //adjusting bounds
+                                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                                for(LatLng latLng:polyLineList)
+                                    builder.include(latLng);
+                                polylineOptions = new PolylineOptions();
+                                polylineOptions.color(Color.RED);
+                                polylineOptions.width(5);
+                                polylineOptions.startCap(new SquareCap());
+                                polylineOptions.endCap(new SquareCap());
+                                polylineOptions.jointType(JointType.ROUND);
+                                polylineOptions.addAll(polyLineList);
+                                direction = mMap.addPolyline(polylineOptions);
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+                            Toast.makeText(Home.this,""+t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private List decodePoly(String encoded) {
+
+        List poly = new ArrayList();
+        int index = 0, len = encoded.length();
+        int lat = 0, lng = 0;
+
+        while (index < len) {
+            int b, shift = 0, result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lng += dlng;
+
+            LatLng p = new LatLng((((double) lat / 1E5)),
+                    (((double) lng / 1E5)));
+            poly.add(p);
+        }
+
+        return poly;
     }
 
     @Override

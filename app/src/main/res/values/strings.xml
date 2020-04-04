@@ -23,4 +23,7 @@
     <string name="title_activity_place_picker">Map</string>
     <string name="title_activity_home">Map</string>
     <string name="title_activity_driver_tracking">Map</string>
+    <string name="driver">Driver</string>
+    <string name="pick_image">Pick Image</string>
+    <string name="enter_name">Enter Name</string>
 </resources>
