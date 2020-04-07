@@ -103,6 +103,7 @@ public class Home extends AppCompatActivity
     private Location mLastLocation;
     private static int UPDATE_INTERVAL = 5000;
     private static int FATEST_INTERVAL = 3000;
+    int d=0;
     private static int DISPLACEMENT = 10;
     double latitude1=0.0,longitude1=0.0;
     double latitude2,longitude2;
@@ -320,6 +321,7 @@ boolean c=false;
             mapRipple.withDistance(500);
             mapRipple.withRippleDuration(1000);
             mapRipple.withTransparency(0.5f);
+            if(d++==0)
             mapRipple.startRippleMapAnimation();
 
             btnPickupRequest.setText("Getting Your DRIVER ....");
@@ -345,6 +347,7 @@ boolean c=false;
             mapRipple.withDistance(500);
             mapRipple.withRippleDuration(2000);
             mapRipple.withTransparency(0.5f);
+            if(d++==0)
             mapRipple.startRippleMapAnimation();
 
             btnPickupRequest.setText("Getting Your DRIVER ....");
@@ -404,8 +407,6 @@ boolean c=false;
                     findDriver();
 
                 }
-
-
             }
 
             @Override

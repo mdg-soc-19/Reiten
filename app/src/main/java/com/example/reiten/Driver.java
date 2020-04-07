@@ -97,15 +97,22 @@ public class Driver extends AppCompatActivity {public static final String TAG = 
                     loadingProgress.setVisibility(View.VISIBLE);
                     final String name = mname.getText().toString();
                     final String vehicle = mveh.getText().toString();
+                    if(pickedImgUri==null)
+                    {   loadingProgress.setVisibility(View.INVISIBLE);
+                        mname.setError("Please upload profile photo");
+                        return;
+                    }
                     final String ig = pickedImgUri.toString();
 
 
                     if (TextUtils.isEmpty(name)) {
+                        loadingProgress.setVisibility(View.INVISIBLE);
                         mname.setError("Name is Required.");
                         return;
                     }
 
                     if (TextUtils.isEmpty(vehicle)) {
+                        loadingProgress.setVisibility(View.INVISIBLE);
                         mveh.setError("Rickshaw no. is Required.");
                         return;
                     }

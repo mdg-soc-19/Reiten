@@ -96,15 +96,22 @@ public class Customer extends AppCompatActivity {
                     loadingProgress.setVisibility(View.VISIBLE);
                     final String name = mname.getText().toString();
                     final String bhawan = mbhawan.getText().toString();
+                    if(pickedImgUri==null)
+                    {   loadingProgress.setVisibility(View.INVISIBLE);
+                        mname.setError("Please upload profile photo");
+                        return;
+                    }
                     final String ig = pickedImgUri.toString();
 
 
                     if (TextUtils.isEmpty(name)) {
+                        loadingProgress.setVisibility(View.INVISIBLE);
                         mname.setError("Name is Required.");
                         return;
                     }
 
                     if (TextUtils.isEmpty(bhawan)) {
+                        loadingProgress.setVisibility(View.INVISIBLE);
                         mbhawan.setError("Bhawan name is Required.");
                         return;
                     }

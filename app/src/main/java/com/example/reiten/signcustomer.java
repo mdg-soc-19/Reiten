@@ -66,17 +66,18 @@ public class signcustomer extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         state = findViewById(R.id.state);
         resend = findViewById(R.id.resendOtpBtn);
-        DocumentReference docRef = fStore.collection("Customers").document(fAuth.getCurrentUser().getUid());
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if(documentSnapshot.exists()){
-                    startActivity(new Intent(getApplicationContext(),Home.class));
-                    finish();
+        if (fAuth.getCurrentUser() != null) {
+            DocumentReference docRef = fStore.collection("Customers").document(fAuth.getCurrentUser().getUid());
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if(documentSnapshot.exists()){
+                        startActivity(new Intent(getApplicationContext(),Home.class));
+                        finish();
+                    }
                 }
-            }
-        });
-
+            });
+        }
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

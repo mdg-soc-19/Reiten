@@ -67,16 +67,19 @@ public class signdriver extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         state = findViewById(R.id.state);
         resend = findViewById(R.id.resendOtpBtn);
-        DocumentReference docRef = fStore.collection("Drivers").document(fAuth.getCurrentUser().getUid());
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()) {
-                    startActivity(new Intent(getApplicationContext(), MapsActivity.class));
-                    finish();
+        if (fAuth.getCurrentUser() != null) {
+            DocumentReference docRef = fStore.collection("Drivers").document(fAuth.getCurrentUser().getUid());
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                        finish();
+                    }
                 }
-            }
-        });
+            });
+        }
+
 
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
